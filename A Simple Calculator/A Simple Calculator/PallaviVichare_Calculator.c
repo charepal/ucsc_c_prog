@@ -39,7 +39,7 @@ int getMenuOption()
 {
     int i;
     /* if scanf is unable to decode one integer from the user input, we need to show an error message and as her to re-enter */
-    while ( 1 != scanf("%d\n", &i) ) {
+    while ( 1 != scanf("%d", &i) ) {
         printf("That is not a valid choice, please re-enter: ");
         /* It seems that if user did not enter a valid integer, scanf keeps getting the same input in its next attempt.
          * So I need to scan that input line and throw it away if I want to give the user another chance to give us
