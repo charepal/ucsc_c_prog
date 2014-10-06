@@ -16,8 +16,8 @@ float Subtraction (float, float);
 float Multiplication (float, float);
 float Division (float, float);
 void Exit ();
-int ErrorMessage ();
-int waitForEnterKey();
+void ErrorMessage ();
+void waitForEnterKey();
 void performOperation(int i);
 int getMenuOption();
 
@@ -32,6 +32,14 @@ int main ()
     return 0;
 }
 
+void discardPreviousInputLine()
+{
+    /* It seems that if user did not enter a valid integer, scanf keeps getting the same input in its next attempt.
+     * So I need to scan that input line and throw it away if I want to give the user another chance to give us
+     * an integer. */
+    char a[1000];
+    scanf("%s", a);
+}
 
 int getMenuOption()
 {
@@ -39,17 +47,13 @@ int getMenuOption()
     /* if scanf is unable to decode one integer from the user input, we need to show an error message and as her to re-enter */
     while ( 1 != scanf("%d", &i) ) {
         printf("That is not a valid choice, please re-enter: ");
-        /* It seems that if user did not enter a valid integer, scanf keeps getting the same input in its next attempt.
-         * So I need to scan that input line and throw it away if I want to give the user another chance to give us
-         * an integer. */
-        char a[1000];
-        scanf("%s", a);
+        discardPreviousInputLine();
     }
     return i;
 }
 
 
-int waitForEnterKey()
+void waitForEnterKey()
 {
     printf("\n\nPress enter key to continue .... ");
     char a[1000];
@@ -63,8 +67,6 @@ int waitForEnterKey()
      * The is not a problem for two scanf's called one after the other because scanf's ignore \n, \t space etc. But
      * of course we cannot use scanf because it does not move forward when user only hits the enter key. */
     fgets(a, 1000, stdin);
-
-    return 0;
 }
 
 
@@ -91,9 +93,11 @@ void performOperation(int i)
         Exit ();
     }
     
-    if ( (i < 1) || (i > 5) ) {
-        int i = ErrorMessage ();
+    while ( (i < 1) || (i > 5) ) {
+        ErrorMessage ();
+        i = getMenuOption();
     }
+    
     
     
     /*
@@ -122,7 +126,11 @@ void performOperation(int i)
         break;
     }
     
-    scanf("%f %f", &num1, &num2);
+    while(2 != scanf("%f %f", &num1, &num2)) {
+        printf("\nError reading your numbers, please re-enter both numbers: ");
+        discardPreviousInputLine();
+    }
+
     
     switch (i) {
         case 1:
@@ -178,7 +186,10 @@ float Division (float a, float b)
         printf("\nThis is- divide by zero error, which is invalid.\n" );
         printf("\nPlease re-enter your numbers,seperated by a space: ");
         
-        scanf("%f %f", &a, &b);
+        while(2 != scanf("%f %f", &a, &b)) {
+            printf("\nError reading your numbers, please re-enter both numbers: ");
+            discardPreviousInputLine();
+        }
     }
     
     printf("\nResult of Division %.2f and %.2f is %.2f.",a , b, a / b);
@@ -193,11 +204,8 @@ void Exit ()
 }
 
 
-int ErrorMessage ()
+void ErrorMessage ()
 {
-    int i;
-    printf("\nThat is not a valid choice, please re-enter: ");
-    scanf("%d", &i);
-    return i;
+    printf("That is not a valid choice, please re-enter: ");
 }
 
