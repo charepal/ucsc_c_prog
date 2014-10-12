@@ -33,12 +33,20 @@ int main ()
     return 0;
 }
 
-void discardPreviousInputLine()
+/*
+ Returns true if it saw unnecessary input. fslse otherwise.
+ */
+bool discardUnnecessaryInput()
 {
     /* It seems that if user did not enter a valid integer, scanf keeps getting the same input in its next attempt.
      * So I need to scan that input line and throw it away if I want to give the user another chance to give us
      * an integer. */
-    while (getchar() != '\n') { }
+    int i;
+    for (i = 0; getchar() != '\n'; i++) {
+        
+    }
+    
+    return (i > 0) ? true : false;
 }
 
 int getMenuOption()
@@ -47,9 +55,14 @@ int getMenuOption()
     /* if scanf is unable to decode one integer from the user input, we need to show an error message and re-enter */
     while ( 1 != scanf("%d", &i) ) {
         printf("\nThat is not a valid choice, please re-enter: ");
-        discardPreviousInputLine();
+        discardUnnecessaryInput();
     }
-    return i;
+    if (false == discardUnnecessaryInput()) {
+        return i;
+    } else {
+        printf("\nThat is not a valid choice, please re-enter: ");
+        return getMenuOption();
+    }
 }
 
 
@@ -58,13 +71,13 @@ void waitForEnterKey()
     printf("\n\nPress enter key to continue .... ");
     
     /* We use fgets instead of scanf because scanf does not move forwards if we hit only enter, whereas fgets does. */
-    discardPreviousInputLine();
+    discardUnnecessaryInput();
     /* Looks like the we need two fgets here instead of one. Possibly has to do with us using scanf for getting previous
      * inputs. As far as I can tell, the previous scanf scanned a double. Then scanf threw the \n at the end of that string 
      * back onto the input buffer in which all of users key-strokes wait until we get them out using scanf/fgets etc.
      * The is not a problem for two scanf's called one after the other because scanf's ignore \n, \t space etc. But
      * of course we cannot use scanf because it does not move forward when user only hits the enter key. */
-    discardPreviousInputLine();
+    discardUnnecessaryInput();
 }
 
 
@@ -126,7 +139,7 @@ void performOperation(int i)
     
     while(2 != scanf("%f %f", &num1, &num2)) {
         printf("\nError reading your numbers, please re-enter both numbers: ");
-        discardPreviousInputLine();
+        discardUnnecessaryInput();
     }
 
     
@@ -186,7 +199,7 @@ float Division (float a, float b)
         
         while(2 != scanf("%f %f", &a, &b)) {
             printf("\nError reading your numbers, please re-enter both numbers: ");
-            discardPreviousInputLine();
+            discardUnnecessaryInput();
         }
     }
     
