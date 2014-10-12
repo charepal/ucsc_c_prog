@@ -56,17 +56,15 @@ int getMenuOption()
 void waitForEnterKey()
 {
     printf("\n\nPress enter key to continue .... ");
-    char a[1000];
     
     /* We use fgets instead of scanf because scanf does not move forwards if we hit only enter, whereas fgets does. */
-    fgets(a, 1000, stdin);
-
+    discardPreviousInputLine();
     /* Looks like the we need two fgets here instead of one. Possibly has to do with us using scanf for getting previous
      * inputs. As far as I can tell, the previous scanf scanned a double. Then scanf threw the \n at the end of that string 
      * back onto the input buffer in which all of users key-strokes wait until we get them out using scanf/fgets etc.
      * The is not a problem for two scanf's called one after the other because scanf's ignore \n, \t space etc. But
      * of course we cannot use scanf because it does not move forward when user only hits the enter key. */
-    fgets(a, 1000, stdin);
+    discardPreviousInputLine();
 }
 
 
