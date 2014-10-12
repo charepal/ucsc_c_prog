@@ -8,6 +8,7 @@
 
 
 #include <stdio.h>
+#include <curses.h>
 
 void desplayMenuOptions ();
 int getInput ();
@@ -37,16 +38,15 @@ void discardPreviousInputLine()
     /* It seems that if user did not enter a valid integer, scanf keeps getting the same input in its next attempt.
      * So I need to scan that input line and throw it away if I want to give the user another chance to give us
      * an integer. */
-    char a[1000];
-    scanf("%s", a);
+    while (getchar() != '\n') { }
 }
 
 int getMenuOption()
 {
     int i;
-    /* if scanf is unable to decode one integer from the user input, we need to show an error message and as her to re-enter */
+    /* if scanf is unable to decode one integer from the user input, we need to show an error message and re-enter */
     while ( 1 != scanf("%d", &i) ) {
-        printf("That is not a valid choice, please re-enter: ");
+        printf("\nThat is not a valid choice, please re-enter: ");
         discardPreviousInputLine();
     }
     return i;
